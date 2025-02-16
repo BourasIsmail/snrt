@@ -6,6 +6,7 @@ import ma.snrt.snrt.Repositories.RolesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,6 +22,10 @@ public class RolesService {
         else {
             throw new RuntimeException("Role not found");
         }
+    }
+
+    public List<Roles> getRoles() {
+        return rolesRepository.findAll();
     }
 
     public Roles addRole(Roles role) {
