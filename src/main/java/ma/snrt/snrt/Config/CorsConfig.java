@@ -1,4 +1,4 @@
-package com.unity.erm.unity_erm.Config;
+package ma.snrt.snrt.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +14,7 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:3000"); // Add your frontend URL
+        config.addAllowedOrigin("http://192.168.3.1:3000"); // Add your frontend URL
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);

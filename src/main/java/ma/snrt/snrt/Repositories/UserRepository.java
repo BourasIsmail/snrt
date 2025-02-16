@@ -1,6 +1,6 @@
-package com.unity.erm.unity_erm.Repositories;
+package ma.snrt.snrt.Repositories;
 
-import com.unity.erm.unity_erm.Entities.User;
+import ma.snrt.snrt.Entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.unity.erm.unity_erm.Entities;
+package ma.snrt.snrt.Entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

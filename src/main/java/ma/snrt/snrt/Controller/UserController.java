@@ -1,9 +1,5 @@
-package com.unity.erm.unity_erm.Controller;
+package ma.snrt.snrt.Controller;
 
-import com.unity.erm.unity_erm.Entities.AuthRequest;
-import com.unity.erm.unity_erm.Entities.User;
-import com.unity.erm.unity_erm.Services.JwtService;
-import com.unity.erm.unity_erm.Services.UsersService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -11,7 +7,10 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
+import ma.snrt.snrt.Entities.AuthRequest;
+import ma.snrt.snrt.Entities.User;
+import ma.snrt.snrt.Services.JwtService;
+import ma.snrt.snrt.Services.UsersService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,7 +49,7 @@ public class UserController {
             newUser.setName(user.getName());
             newUser.setEmail(user.getEmail());
             newUser.setPassword(user.getPassword());
-            // newUser.setRoles(user.getRoles());
+            newUser.setRoles(user.getRoles());
             // Add the new user using the userService
             User savedUser = userService.addUser(newUser);
             // Return a response indicating the user was added successfully

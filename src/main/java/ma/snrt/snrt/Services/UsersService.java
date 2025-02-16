@@ -1,14 +1,15 @@
-package com.unity.erm.unity_erm.Services;
+package ma.snrt.snrt.Services;
 
-import com.unity.erm.unity_erm.Entities.Roles;
-import com.unity.erm.unity_erm.Entities.User;
-import com.unity.erm.unity_erm.Repositories.UserRepository;
+
+import ma.snrt.snrt.Entities.Roles;
+import ma.snrt.snrt.Entities.User;
+import ma.snrt.snrt.Repositories.UserRepository;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
 import java.util.Optional;

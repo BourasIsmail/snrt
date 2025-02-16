@@ -1,6 +1,6 @@
-package com.unity.erm.unity_erm.Repositories;
+package ma.snrt.snrt.Repositories;
 
-import com.unity.erm.unity_erm.Entities.Roles;
+import ma.snrt.snrt.Entities.Roles;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,8 @@
-package com.unity.erm.unity_erm.Services;
+package ma.snrt.snrt.Services;
 
-import com.unity.erm.unity_erm.Entities.Roles;
-import com.unity.erm.unity_erm.Repositories.RolesRepository;
+
+import ma.snrt.snrt.Entities.Roles;
+import ma.snrt.snrt.Repositories.RolesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

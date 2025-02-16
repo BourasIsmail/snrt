@@ -1,16 +1,13 @@
-package com.unity.erm.unity_erm.Services;
+package ma.snrt.snrt.Services;
 
-import com.unity.erm.unity_erm.Entities.User;
+import ma.snrt.snrt.Entities.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import java.util.List;
 
 public class UsersDetails implements UserDetails {
     String userName = null;
