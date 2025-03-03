@@ -10,11 +10,21 @@ import java.util.Optional;
 
 @Service
 public class UniteService {
-    @Autowired
-    private UniteRepository uniteRepository;
+    private final UniteRepository uniteRepository;
+
+    private final UsersService userService;
+
+    public UniteService(UsersService userService, UniteRepository uniteRepository) {
+        this.userService = userService;
+        this.uniteRepository = uniteRepository;
+    }
 
     public List<Unite> getUnites() {
         return uniteRepository.findAll();
+    }
+
+    public List<Unite> getUnitesByUser(Long id) {
+        return uniteRepository.findUniteByUser(id);
     }
 
     public Unite getUnite(Long id) {
@@ -31,9 +41,13 @@ public class UniteService {
     }
 
     public String deleteUnite(Long id) {
-        Unite unite = getUnite(id);
-        uniteRepository.delete(unite);
-        return "Unite deleted";
+        try {
+            userService.removeUniteFromUsers(id);
+            uniteRepository.deleteById(id);
+            return "Unite deleted successfully";
+        } catch (Exception e) {
+            throw new RuntimeException("Error deleting unite: " + e.getMessage());
+        }
     }
 
     public Unite updateUnite(Long id, Unite unite) {

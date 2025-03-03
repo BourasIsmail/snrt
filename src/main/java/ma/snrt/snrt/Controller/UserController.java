@@ -8,8 +8,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ma.snrt.snrt.Entities.AuthRequest;
+import ma.snrt.snrt.Entities.Roles;
+import ma.snrt.snrt.Entities.Unite;
 import ma.snrt.snrt.Entities.User;
 import ma.snrt.snrt.Services.JwtService;
+import ma.snrt.snrt.Services.RolesService;
+import ma.snrt.snrt.Services.UniteService;
 import ma.snrt.snrt.Services.UsersService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,9 +33,10 @@ import java.util.List;
         description = "This API provides the capability to search User from a User Repository")
 public class UserController {
     private final UsersService userService;
+    private final UniteService uniteService;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-
+    private final RolesService rolesService;
     // Endpoint to test if the API is working
     @GetMapping("/test")
     @Operation(summary = "Test the API", description = "This endpoint is used to test if the API is working")
@@ -49,7 +54,15 @@ public class UserController {
             newUser.setName(user.getName());
             newUser.setEmail(user.getEmail());
             newUser.setPassword(user.getPassword());
-            newUser.setRoles(user.getRoles());
+            if(!user.getRoles().isEmpty()){
+               Roles role = rolesService.getRole(user.getRoles().get(0).getId());
+                newUser.setRoles(List.of(role));
+            }
+            if(user.getUnite().getId() != 0){
+                Unite unite = uniteService.getUnite(user.getUnite().getId());
+                newUser.setUnite(unite);
+            }
+
             // Add the new user using the userService
             User savedUser = userService.addUser(newUser);
             // Return a response indicating the user was added successfully
@@ -108,7 +121,6 @@ public class UserController {
 
     // Endpoint to get all users, accessible only to users with ADMIN_ROLES authority
     @GetMapping("/getUsers")
-    @PreAuthorize("hasAuthority('ADMIN_ROLES')")
     public ResponseEntity<List<User>> getAllUsers() {
         // Get the list of all users using the userService
         List<User> users = userService.getUsers();
@@ -118,7 +130,6 @@ public class UserController {
 
     // Endpoint to get a user by ID, accessible only to users with USER_ROLES authority
     @GetMapping("/getUsers/{id}")
-    @PreAuthorize("hasAuthority('USER_ROLES')")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         // Get the user by ID using the userService
         User user = userService.getUser(id);
@@ -128,7 +139,6 @@ public class UserController {
 
     // Endpoint to get a user by email, accessible only to users with ADMIN_ROLES authority
     @GetMapping("/getUsersByEmail/{email}")
-    @PreAuthorize("hasAuthority('ADMIN_ROLES')")
     public ResponseEntity<User> getUsersByEmail(@PathVariable String email) {
         // Get the user by email using the userService
         User users = userService.getUserByEmail(email);
@@ -138,21 +148,25 @@ public class UserController {
 
     // Endpoint to delete a user by ID, accessible only to users with ADMIN_ROLES authority
     @DeleteMapping("{id}")
-    @PreAuthorize("hasAuthority('ADMIN_ROLES')")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-        // Delete the user by ID using the userService
-        userService.deleteUser(id);
-        // Return a response indicating the user was deleted successfully
-        return ResponseEntity.ok("User deleted successfully!");
+        try {
+            // Delete the user by ID using the userService
+            userService.deleteUser(id);
+            // Return a response indicating the user was deleted successfully
+            return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            // Return a response indicating an error occurred
+            return new ResponseEntity<>("Error deleting user: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // Endpoint to update a user by ID, accessible to users with ADMIN_ROLES or USER_ROLES authority
     @PutMapping("{id}")
-    @PreAuthorize("hasAuthority('ADMIN_ROLES') OR hasAuthority('USER_ROLES')")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User user) {
         // Update the user by ID using the userService
         User updatedUser = userService.updateUser(id, user);
         // Return the updated user in the response
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
+
 }

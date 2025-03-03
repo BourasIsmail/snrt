@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import ma.snrt.snrt.Entities.Unite;
 import ma.snrt.snrt.Services.UniteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,31 +29,46 @@ public class UniteController {
 
     //Endpoint to get a unite by id
     @GetMapping("/get/{id}")
-    public ResponseEntity<Unite> getUnite(Long id) {
+    public ResponseEntity<Unite> getUnite(@PathVariable Long id) {
         Unite unite = uniteService.getUnite(id);
         return ResponseEntity.ok(unite);
     }
 
     //Endpoint to add a new unite
     @PostMapping("/add")
-    public ResponseEntity<Unite> addUnite(Unite unite) {
-        Unite newUnite = uniteService.addUnite(unite);
-        return ResponseEntity.ok(newUnite);
+    public ResponseEntity<Unite> addUnite(@RequestBody Unite unite) {
+        try {
+            Unite newUnite = uniteService.addUnite(unite);
+            return ResponseEntity.ok(newUnite);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     //Endpoint to delete a unite by id
-    @GetMapping("/delete/{id}")
-    public ResponseEntity<String> deleteUnite(Long id) {
-        String message = uniteService.deleteUnite(id);
-        return ResponseEntity.ok(message);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteUnite(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(uniteService.deleteUnite(id));
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error deleting unite: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     //Endpoint to update a unite by id
     @PutMapping("/update/{id}")
-    public ResponseEntity<Unite> updateUnite(Long id, Unite unite) {
+    public ResponseEntity<Unite> updateUnite(@PathVariable Long id,@RequestBody Unite unite) {
         Unite updatedUnite = uniteService.updateUnite(id, unite);
         return ResponseEntity.ok(updatedUnite);
     }
+
+    //Endpoint to get unites by user
+    @GetMapping("/getByUser/{id}")
+    public ResponseEntity<List<Unite>> getUnitesByUser(@PathVariable Long id) {
+        List<Unite> unites = uniteService.getUnitesByUser(id);
+        return ResponseEntity.ok(unites);
+    }
+
 
 
 }

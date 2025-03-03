@@ -2,6 +2,8 @@ package ma.snrt.snrt.Services;
 
 
 import ma.snrt.snrt.Entities.Roles;
+import ma.snrt.snrt.Entities.Type;
+import ma.snrt.snrt.Entities.Unite;
 import ma.snrt.snrt.Entities.User;
 import ma.snrt.snrt.Repositories.UserRepository;
 import org.springframework.context.annotation.Lazy;
@@ -23,11 +25,13 @@ public class UsersService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RolesService rolesService;
+    private final UniteService uniteService;
 
-    public UsersService(UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder, RolesService rolesService) {
+    public UsersService(UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder, RolesService rolesService, @Lazy UniteService uniteService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.rolesService = rolesService;
+        this.uniteService = uniteService;
     }
 
     @Override
@@ -40,6 +44,7 @@ public class UsersService implements UserDetailsService {
     }
 
     public User addUser(User user) {
+        System.out.println(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
@@ -59,9 +64,14 @@ public class UsersService implements UserDetailsService {
     }
 
     public String deleteUser(Long id) {
-        User user = getUser(id);
-        userRepository.delete(user);
-        return "User deleted";
+        try {
+            User user = getUser(id);
+            userRepository.delete(user);
+            return "User deleted";
+        } catch (Exception e) {
+            throw new RuntimeException("User not found");
+        }
+
     }
 
     /**
@@ -81,6 +91,14 @@ public class UsersService implements UserDetailsService {
         }
         existingUser.setEmail(user.getEmail());
         existingUser.setName(user.getName());
+        if(user.getUnite() != null) {
+            Unite unite1 = uniteService.getUnite(user.getUnite().getId());
+            existingUser.setUnite(unite1);
+        }
+        else {
+            existingUser.setUnite(null);
+        }
+
         // Only update password if it's provided and not empty
         if (user.getPassword() != null && !user.getPassword().isEmpty()) {
             existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -90,5 +108,13 @@ public class UsersService implements UserDetailsService {
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public void removeUniteFromUsers(Long uniteId) {
+        List<User> users = userRepository.findByUniteId(uniteId);
+        for (User user : users) {
+            user.setUnite(null);
+            userRepository.save(user);
+        }
     }
 }

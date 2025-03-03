@@ -6,8 +6,7 @@ import ma.snrt.snrt.Entities.Roles;
 import ma.snrt.snrt.Services.RolesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,23 +19,27 @@ public class RolesController {
     @Autowired
     private RolesService rolesService;
 
+    @GetMapping("/list")
     public ResponseEntity<List<Roles>> getRoles() {
         return ResponseEntity.ok(rolesService.getRoles());
     }
 
-    public ResponseEntity<Roles> getRole(Long id) {
+    @GetMapping("/get/{id}")
+    public ResponseEntity<Roles> getRole(@PathVariable Long id) {
         return ResponseEntity.ok(rolesService.getRole(id));
     }
 
-    public ResponseEntity<Roles> addRole(Roles role) {
+    @PostMapping("/add")
+    public ResponseEntity<Roles> addRole(@RequestBody Roles role) {
         return ResponseEntity.ok(rolesService.addRole(role));
     }
 
-    public ResponseEntity<String> deleteRole(Long id) {
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteRole(@PathVariable Long id) {
         return ResponseEntity.ok(rolesService.deleteRole(id));
     }
 
-    public ResponseEntity<Roles> updateRole(Long id, Roles role) {
+    public ResponseEntity<Roles> updateRole(@PathVariable Long id,@RequestBody Roles role) {
         return ResponseEntity.ok(rolesService.updateRole(id, role));
     }
 }
